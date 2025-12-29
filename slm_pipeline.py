@@ -30,9 +30,48 @@ def clean_json_response(response: str) -> str:
     return response.strip()
 
 # -----------------------------
-# 1. Intent detection (MiniLM)
+# Functions definition
 # -----------------------------
 
+def restart_service(service, env) -> str:
+    """
+    Restart the specified service for the given environment. 
+    Args: service: The name of the service to restart, env: the environment
+    Returns: None
+    """
+
+    print(f"[ACTION] Restarting {service} in {env}")
+
+
+def scale_service(service, replicas)-> str:
+    """
+    Scale up the specified service to a given number of replicas
+    Args: service: The name of the service to restart, replicas: the number (integer) of replicas
+    Returns: None
+    """
+    
+    print(f"[ACTION] Scaling {service} to {replicas} replicas")
+
+
+def open_ticket(summary, severity)-> str:
+    """
+    Opens a ticket with a given summary and a specified severity level
+    Args: summary: reason for the ticket, severity: severity level for the ticket LOW, HIGH or SEVERE
+    Returns: None
+    """
+    
+    print(f"[ACTION] Opening ticket: {summary} ({severity})")
+
+FUNCTIONS = {
+    "restart_service": restart_service,
+    "scale_service": scale_service,
+    "open_ticket": open_ticket
+}
+
+
+# -----------------------------
+# Intent detection (MiniLM)
+# -----------------------------
 INTENTS = {
     "incident": "System incident or outage",
     "question": "User question",
@@ -46,10 +85,8 @@ intent_embeddings = [
     for text in intent_texts
 ]
 
-
 def cosine_sim(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
-
 
 def detect_intent(text: str) -> str:
     emb = ollama.embeddings(
@@ -60,9 +97,8 @@ def detect_intent(text: str) -> str:
     scores = [cosine_sim(emb, e) for e in intent_embeddings]
     return list(INTENTS.keys())[int(np.argmax(scores))]
 
-
 # -----------------------------
-# 2. Planner (Phi-3 Mini)
+# Planner (Phi-3 Mini)
 # -----------------------------
 
 def plan(alert: str) -> dict:
@@ -101,7 +137,7 @@ Alert:
 
 
 # -----------------------------
-# 3. Tool execution (Function Gemma)
+# Tool execution (Function Gemma)
 # -----------------------------
 
 def call_function(step: dict) -> dict | None:
@@ -125,48 +161,7 @@ def call_function(step: dict) -> dict | None:
 
 
 # -----------------------------
-# 4. Real actions (classic code)
-# -----------------------------
-
-def restart_service(service, env) -> str:
-    """
-    Restart the specified service for the given environment. 
-    Args: service: The name of the service to restart, env: the environment
-    Returns: None
-    """
-
-    print(f"[ACTION] Restarting {service} in {env}")
-
-
-def scale_service(service, replicas)-> str:
-    """
-    Scale up the specified service to a given number of replicas
-    Args: service: The name of the service to restart, replicas: the number of replicas to scale to
-    Returns: None
-    """
-    
-    print(f"[ACTION] Scaling {service} to {replicas} replicas")
-
-
-def open_ticket(summary, severity)-> str:
-    """
-    Opens a ticket with a given summary and a specified severity level
-    Args: summary: reason for the ticket, severity: severity level for the ticket (low, high, severe)
-    Returns: None
-    """
-    
-    print(f"[ACTION] Opening ticket: {summary} ({severity})")
-
-
-FUNCTIONS = {
-    "restart_service": restart_service,
-    "scale_service": scale_service,
-    "open_ticket": open_ticket
-}
-
-
-# -----------------------------
-# 5. Agent manager (orchestrator)
+# Agent manager (orchestrator)
 # -----------------------------
 
 def handle_input(text: str):
@@ -199,7 +194,7 @@ def handle_input(text: str):
 
 
 # -----------------------------
-# 6. Main test
+# Main
 # -----------------------------
 
 if __name__ == "__main__":
