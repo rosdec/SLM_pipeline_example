@@ -1,26 +1,26 @@
-# SLM Pipeline - Local-first Agentic System
+# SLM Pipeline - Local-first HR Triage System
 
-A local-first agentic pipeline using Ollama small language models for incident response automation. This exploratory implementation uses multiple specialized models for intent detection, planning, and tool execution.
+A local-first agentic pipeline using Ollama small language models for HR report management. This exploratory implementation uses multiple specialized models for intent detection, planning, and tool execution.
 
 ## Overview
 
-This pipeline demonstrates a multi-model approach to automated incident response:
+This pipeline demonstrates a multi-model approach to automated HR report management:
 
 - **all-minilm** → Intent detection using embeddings
 - **phi3:mini** → Planning and reasoning
 - **functiongemma** → Tool execution with function calling
 
-The system receives incident alerts, classifies them, generates a remediation plan, and executes actions through simulated function calls.
+The system receives confidential employee reports, classifies them, generates a remediation plan, and executes actions through simulated function calls.
 
 ## Features
 
-- **Intent Detection**: Classifies input as incident, question, or noise
-- **Automated Planning**: Generates step-by-step remediation plans
+- **Intent Detection**: Classifies input as harassment, burnout, policy violation, or noise
+- **Automated Planning**: Generates step-by-step HR response plans
 - **Function Execution**: Calls appropriate tools based on the plan
 - **Available Actions**:
-  - `restart_service(service, env)` - Restart a service in an environment
-  - `scale_service(service, replicas)` - Scale a service to N replicas
-  - `open_ticket(summary, severity)` - Create support tickets
+  - `open_hr_case(employee_id, category, risk_level)` - Open a confidential HR case
+  - `notify_legal(case_id)` - Notify the legal department about sensitive cases
+  - `schedule_hr_meeting(employee_id, urgency)` - Schedule follow-up HR meetings
 
 ## Prerequisites
 
@@ -79,9 +79,9 @@ Run the pipeline:
 python slm_pipeline.py
 ```
 
-The default test scenario simulates a production incident:
+The default test scenario simulates an HR report:
 ```
-"Master service has been returning 500 errors in production for 10 minutes"
+"My Employee ID is 12345: I have been working excessive hours for months. My manager threatens retaliation if I raise concerns, and I am feeling mentally exhausted and unsafe."
 ```
 
 ### Example Output
@@ -89,24 +89,25 @@ The default test scenario simulates a production incident:
 ```
 [INIT] Loading intent embeddings (MiniLM)...
 ==============================
-[INPUT] Master service has been returning 500 errors in production for 10 minutes
-[INTENT] incident
+[INPUT] My Employee ID is 12345: I have been working excessive hours for months. My manager threatens retaliation if I raise concerns, and I am feeling mentally exhausted and unsafe.
+[INTENT] burnout
 [PLAN]
 [
   {
-    "action": "restart_service",
-    "service": "master",
-    "env": "production"
+    "action": "open_hr_case",
+    "employee_id": "12345",
+    "category": "burnout",
+    "risk_level": "HIGH"
   },
   {
-    "action": "open_ticket",
-    "summary": "Master service 500 errors",
-    "severity": "HIGH"
+    "action": "schedule_hr_meeting",
+    "employee_id": "12345",
+    "urgency": "HIGH"
   }
 ]
 [STEP]
- {'action': 'restart_service', 'service': 'master', 'env': 'production'}
-[ACTION] Restarting master in production
+ {'action': 'open_hr_case', 'employee_id': '12345', 'category': 'burnout', 'risk_level': 'HIGH'}
+[ACTION] Open HR case for employee=12345, category=burnout, risk=HIGH
 ...
 [TOTAL LATENCY] X.XXs
 ```
@@ -149,7 +150,7 @@ Edit the `test_alert` variable in the `__main__` block:
 
 ```python
 if __name__ == "__main__":
-    test_alert = "Your custom incident alert here"
+    test_alert = "Your custom HR report here"
     handle_input(test_alert)
 ```
 
