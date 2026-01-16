@@ -11,14 +11,12 @@ from hr_tools import FUNCTIONS, TOOLS
 class ToolExecutor:
     """Executes HR tools using Function Gemma."""
     
-    def __init__(self, model: str = "functiongemma"):
+    def __init__(self):
         """
         Initialize the tool executor.
         
         Args:
-            model: The function calling model to use (default: functiongemma)
         """
-        self.model = model
         self.functions = FUNCTIONS
         self.tools = TOOLS
     
@@ -42,7 +40,7 @@ class ToolExecutor:
         print(f"[STEP]\n{step}")
         
         response = ollama.chat(
-            model=self.model,
+            model="functiongemma",
             messages=messages,
             tools=self.tools
         )
@@ -67,8 +65,7 @@ class ToolExecutor:
                 return
             
             print(
-                f"[EXECUTE] {tool_call.function.name} "
-                f"args={tool_call.function.arguments}"
+                f"[EXECUTE] {tool_call.function.name} with arguments {tool_call.function.arguments}"
             )
             
             fn(**tool_call.function.arguments)
