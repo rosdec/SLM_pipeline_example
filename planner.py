@@ -41,13 +41,16 @@ Given a confidential employee report and its classified intent,
 produce an ordered plan of actions.
 
 Do not explain just return the steps in the plan.
-Return the plan as a JSON array of steps each step contains one of the available actions.
+Return the plan as a JSON array of action steps. Each step should describe what needs to be done.
 
 
-Available actions:
-- open_hr_case(employee_id, category, risk_level)
-- notify_legal(case_id)
-- schedule_hr_meeting(employee_id, urgency)
+Available types of actions you can recommend:
+- Creating a formal HR case to document and track the issue (specify employee, category, and severity)
+- Escalating the matter to the legal department (specify case reference)
+- Arranging a confidential meeting with HR (specify employee and priority level)
+
+Categories: harassment, burnout, policy_violation, performance
+Priority/Risk levels: LOW, MEDIUM, HIGH
 
 Employee report:
 {report}
