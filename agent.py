@@ -6,7 +6,7 @@ Coordinates the intent detection, planning, and execution pipeline.
 
 import json
 from intent_detector import IntentDetector
-from planner import HRPlanner
+from planner import Planner
 from executor import ToolExecutor
 
 
@@ -16,7 +16,7 @@ class HRTriageAgent:
     def __init__(self):
         """Initialize the HR triage agent with all components."""
         self.intent_detector = IntentDetector()
-        self.planner = HRPlanner()
+        self.planner = Planner()
         self.executor = ToolExecutor()
     
     def handle_report(self, text: str):

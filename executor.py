@@ -37,7 +37,7 @@ class ToolExecutor:
             }
         ]
         
-        print(f"[STEP]\n{step}")
+        print(f"\n[STEP]\n{step}")
         
         response = ollama.chat(
             model="functiongemma",

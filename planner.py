@@ -11,18 +11,16 @@ import json_repair
 from utils import clean_json_response
 
 
-class HRPlanner:
+class Planner:
     """Plans HR responses using Phi-3 Mini."""
     
-    def __init__(self, model: str = "phi3:mini"):
+    def __init__(self):
         """
         Initialize the HR planner.
         
         Args:
-            model: The planning model to use (default: phi3:mini)
         """
-        self.model = model
-    
+   
     def plan(self, report: str, intent: str) -> list:
         """
         Plan HR response actions for a given report.
@@ -60,7 +58,7 @@ Detected intent:
 """
 
         response = ollama.generate(
-            model=self.model,
+            model="phi3:mini",
             prompt=prompt,
             options={"temperature": 0}
         )["response"]

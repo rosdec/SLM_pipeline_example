@@ -21,23 +21,22 @@ INTENTS = {
 class IntentDetector:
     """Detects intent from employee reports using embedding similarity."""
     
-    def __init__(self, model: str = "all-minilm"):
+    def __init__(self):
         """
         Initialize the intent detector.
         
         Args:
-            model: The embedding model to use (default: all-minilm)
         """
-        self.model = model
         self.intents = INTENTS
         self.intent_keys = list(INTENTS.keys())
         self.intent_texts = list(INTENTS.values())
         
-        print(f"[INIT] Loading HR intent embeddings ({model})...")
+        print(f"[INIT] Loading HR intent embeddings..", end="")
         self.intent_embeddings = [
-            ollama.embeddings(model=self.model, prompt=text)["embedding"]
+            ollama.embeddings(model="all-minilm", prompt=text)["embedding"]
             for text in self.intent_texts
         ]
+        print("..done")
     
     @staticmethod
     def cosine_sim(a, b):
@@ -55,7 +54,7 @@ class IntentDetector:
             The detected intent category
         """
         emb = ollama.embeddings(
-            model=self.model,
+            model="all-minilm",
             prompt=text
         )["embedding"]
         
